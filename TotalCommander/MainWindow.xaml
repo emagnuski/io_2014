@@ -3,6 +3,68 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <!-- podzial glowny -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="18"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <!-- podzial przestrzeni poza menu -->
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Content="Tutaj będzie wybór źródła danych"/>
+            <TreeView Grid.Column="0" Grid.Row="1">
+                <TreeViewItem Header=".."/>
+
+                <TreeViewItem Header="img">
+                    <TreeViewItem Header="background.jpg"/>
+                    <TreeViewItem Header="arrow_left.png"/>
+                    <TreeViewItem Header="logo.png"/>
+                </TreeViewItem>
+                <TreeViewItem Header="style">
+                    <TreeViewItem Header="main_style.css"/>
+                    <TreeViewItem Header="ie_style.css"/>
+                </TreeViewItem>
+                <TreeViewItem Header="index.php"/>
+            </TreeView>
+            <Label Grid.Column="1" Grid.Row="0" Content="Tutaj będzie wybór źródła danych"/>
+            <TreeView Grid.Column="1" Grid.Row="1">
+                <TreeViewItem Header="Local Disk (C:)">
+                    <TreeViewItem Header="Windows"/>
+                    <TreeViewItem Header="Program Files"/>
+                    <TreeViewItem Header="Users"/>
+                </TreeViewItem>
+                <TreeViewItem Header="Portable (F:)">
+                    <TreeViewItem Header="Data"/>
+                </TreeViewItem>
+            </TreeView>
+        </Grid>
+
+        <Menu Grid.Column="0" Grid.Row="0" IsMainMenu="True" VerticalAlignment="Top">
+            <MenuItem Header="_File">
+                <Separator />
+                <MenuItem Header="_Exit" />
+            </MenuItem>
+            <MenuItem Header="_Edit" />
+            <MenuItem Header="_View" />
+            <MenuItem Header="_Window" />
+            <MenuItem Header="_Help" />
+        </Menu>
+
+        <Label Grid.Column="0" Grid.Row="2" Content="Tutaj będą jakieś informacje o postępie przesyłania itp"/>
+
+
+
     </Grid>
 </Window>
