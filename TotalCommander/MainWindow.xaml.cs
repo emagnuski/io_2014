@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TotalCommander._7Zip;
 
 namespace TotalCommander
 {
@@ -23,6 +24,9 @@ namespace TotalCommander
         public MainWindow()
         {
             InitializeComponent();
+
+            Archive7Zip zipper = new Archive7Zip();
+           // zipper.createArchive(new List<string>(),"ddd");
         }
     }
 }
