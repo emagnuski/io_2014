@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace LFS
 {
+    //TODO: SPRAWDZANIE ŚCIEŻKI
     public class LocalFileSystem : IFileSystem
     {
         public void Copy(string from, string to, IFileSystem fileSystem)

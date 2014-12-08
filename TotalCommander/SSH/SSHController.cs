@@ -14,6 +14,7 @@ namespace TotalCommander.SSH
         SftpClient sftp;
 
         public SSHController(){
+            //TODO: To dać połączenie, disconnect (względnie umieścić w destruktorze)
         }
 
         public void connect(String address, String user, String password)

@@ -34,8 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Renci.SshNet">
-      <HintPath>..\..\..\Downloads\Renci.SshNet.dll</HintPath>
+    <Reference Include="Renci.SshNet, Version=2014.4.6.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>SSH\Renci.SshNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -56,6 +57,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="7Zip\Archive7Zip.cs" />
+    <Compile Include="7Zip\IArchive7Zip.cs" />
+    <Compile Include="Controller\Controller.cs" />
+    <Compile Include="Controller\IController.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="SSH\SSHController.cs" />
     <Page Include="MainWindow.xaml">
