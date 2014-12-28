@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace TotalCommander.Journals
 {
-    interface IJournalManager
+    public interface IJournalManager
     {
         List<Journal> GetJournals();
         void RemoveJournal(int journalNumber);
@@ -14,13 +14,13 @@ namespace TotalCommander.Journals
 
     public abstract class AbstractJournalManager : IJournalManager
     {
-        private List<Journal> journals;
+        protected List<Journal> journals;
 
         public AbstractJournalManager()
         {
             journals = new List<Journal>();
             JournalsLimit = 10;
-            GenerationInterval = 3600;
+            GenerationInterval = 3600000;
         }
 
         public int JournalsLimit
@@ -46,5 +46,26 @@ namespace TotalCommander.Journals
         }
 
         public abstract void GenerateJournal();
+
+        public Thread Start()
+        {
+            Thread t = new Thread(ThreadStart);
+            t.IsBackground = true;
+            t.Start();
+            return t;
+        }
+
+        protected void ThreadStart()
+        {
+            while(true)
+            {
+                GenerateJournal();
+                if (journals.Count > JournalsLimit)
+                {
+                    journals.RemoveAt(0);
+                }
+                Thread.Sleep((int)GenerationInterval);
+            }
+        }
     }
 }

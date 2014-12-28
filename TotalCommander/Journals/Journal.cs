@@ -28,8 +28,7 @@ namespace TotalCommander.Journals
             {
                 path = Path.Combine(path, id + extension);
             }
-            FileStream fs = File.OpenWrite(path);
-            StreamWriter writer = new StreamWriter(fs);
+            StreamWriter writer = new StreamWriter(File.OpenWrite(path));
             writer.WriteLine("Journal id " + id);
             writer.WriteLine(creationDate);
             writer.WriteLine();
@@ -37,6 +36,7 @@ namespace TotalCommander.Journals
             {
                 writer.WriteLine(key + ": " + attributes[key]);
             }
+            writer.Close();
         }
 
         public String Id
