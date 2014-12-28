@@ -61,6 +61,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Journals\IJournalManager.cs" />
+    <Compile Include="Journals\Journal.cs" />
     <Compile Include="LocalFileSystem\IFileSystem.cs" />
     <Compile Include="LocalFileSystem\LocalFileSystem.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -94,6 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Journals\Recently Used\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,15 +8,15 @@ namespace TotalCommander.Journals
 {
     interface IJournalManager
     {
-        public List<Journal> GetJournals();
-        public void RemoveJournal(int journalNumber);
+        List<Journal> GetJournals();
+        void RemoveJournal(int journalNumber);
     }
 
-    public class JournalManagerImpl : IJournalManager
+    public abstract class AbstractJournalManager : IJournalManager
     {
         private List<Journal> journals;
 
-        public JournalManagerImpl()
+        public AbstractJournalManager()
         {
             journals = new List<Journal>();
             JournalsLimit = 10;

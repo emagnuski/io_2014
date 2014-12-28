@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TotalCommander.Journals
 {
-    class Journal
+    public class Journal
     {
         private String id;
         private Dictionary<String, String> attributes;
