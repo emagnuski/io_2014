@@ -9,15 +9,11 @@ using System.Threading.Tasks;
 
 namespace TotalCommander.SSH
 {
-    public class SSHController : IFileSystem
+    public class SSHController : IFileSystem, IDisposable
     {
         SftpClient sftp;
 
-        public SSHController(){
-            //TODO: To dać połączenie, disconnect (względnie umieścić w destruktorze)
-        }
-
-        public void connect(String address, String user, String password)
+        public SSHController(String address, String user, String password)
         {
             sftp = new SftpClient(address, user, password);
             sftp.Connect();
@@ -33,7 +29,7 @@ namespace TotalCommander.SSH
 
         public FileInfo getFile(string path)
         {
-            throw new NotImplementedException();
+            return new FileInfo(path);
         }
 
         public List<FileInfo> getFiles(string path)
@@ -60,6 +56,20 @@ namespace TotalCommander.SSH
         public void rename(string path, string name)
         {
             sftp.RenameFile(path, name);
+        }
+
+        /// <summary>
+        /// Method that enables copying files from another file systems
+        /// </summary>
+        public void CreateFile(String path, byte[] data)
+        {
+            sftp.OpenWrite(path);
+            sftp.WriteAllBytes(path, data);
+        }
+
+        public void Dispose()
+        {
+            sftp.Disconnect();
         }
     }
 }
