@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TotalCommander.Controller;
 
 namespace TotalCommander
 {
@@ -20,9 +21,12 @@ namespace TotalCommander
     /// </summary>
     public partial class MainWindow : Window
     {
+        IController contr = new Controller.Controller(); 
+        
         public MainWindow()
         {
             InitializeComponent();
+            
         }
     }
 }
