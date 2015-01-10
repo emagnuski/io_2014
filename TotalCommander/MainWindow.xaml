@@ -26,28 +26,27 @@
             <!-- lewy gorny panel wyboru zrodla danych -->
             <StackPanel Grid.Column="0" Grid.Row="0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 10, 0, 10">
-                    <RadioButton Content="SSH" Margin="10, 0, 10, 0" />
-                    <RadioButton Content="Dropbox" Margin="10, 0, 10, 0" />
-                    <RadioButton Content="Lokalny" Margin="10, 0, 10, 0" />
-                    <Button Margin="20, 0, 10, 0" Padding="10, 0, 10, 0">Połącz</Button>
+                    <RadioButton Content="SSH" Name="setSsh" Margin="10, 0, 10, 0" />
+                    <RadioButton Content="Dropbox" Name="setDrop" Margin="10, 0, 10, 0" />
+                    <RadioButton Content="Lokalny" Name="setLok" Margin="10, 0, 10, 0" IsChecked="True" />
+                    <Button Name="sendButton" Margin="20, 0, 10, 0" Padding="10, 0, 10, 0">Połącz</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Login:   " />
-                    <TextBox Width="150" />
+                    <TextBox Name="login" Width="150" />
                     <Label Content="Hasło: " Margin="40, 0, 0, 0"/>
-                    <TextBox Width="150" />
+                    <TextBox Name="haslo" Width="150" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Serwer: "/>
-                    <TextBox Width="150" />
+                    <TextBox Name="server" Width="150" />
                     <Label Content="Port:   " Margin="40, 0, 0, 0"/>
-                    <TextBox Width="150" Margin="2, 0, 0, 0"/>
+                    <TextBox Name="port" Width="150" Margin="2, 0, 0, 0"/>
                 </StackPanel> 
             </StackPanel>
             <!-- lewy treeview -->
             <TreeView Grid.Column="0" Grid.Row="1">
                 <TreeViewItem Header=".."/>
-
                 <TreeViewItem Header="img">
                     <TreeViewItem Header="background.jpg"/>
                     <TreeViewItem Header="arrow_left.png"/>
@@ -80,7 +79,7 @@
         <Menu Grid.Column="0" Grid.Row="0" IsMainMenu="True" VerticalAlignment="Top">
             <MenuItem Header="_File">
                 <Separator />
-                <MenuItem Header="_Exit" />
+                <MenuItem Name="menuExit" Header="_Exit" />
             </MenuItem>
             <MenuItem Header="_Edit" />
             <MenuItem Header="_View" />
@@ -88,7 +87,7 @@
             <MenuItem Header="_Help" />
         </Menu>
 
-        <Label Grid.Column="0" Grid.Row="2" Content="Tutaj będą jakieś informacje o postępie przesyłania itp"/>
+        <Label Grid.Column="0" Grid.Row="2" Content="..."/>
 
 
 
