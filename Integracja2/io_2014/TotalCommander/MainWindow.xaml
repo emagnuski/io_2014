@@ -42,7 +42,7 @@
                     <TextBox Name="server" Width="150" />
                     <Label Content="Port:   " Margin="40, 0, 0, 0"/>
                     <TextBox Name="port" Width="150" Margin="2, 0, 0, 0"/>
-                </StackPanel> 
+                </StackPanel>
             </StackPanel>
             <!-- lewy treeview -->
             <TreeView Name="tree" Grid.Column="0" Grid.Row="1" TreeViewItem.Expanded ="treeExpanded">
@@ -56,8 +56,26 @@
                 </TreeViewItem>-->
             </TreeView>
             <!-- prawy gorny panel -->
-            <StackPanel Grid.Column="1" Grid.Row="0">
-                <Label Content="Ustawienia sortowania" />
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Sortuj wg. " />
+                    <ComboBox Name="">
+                        <ComboBoxItem IsSelected="True">domyślne</ComboBoxItem>
+                        <ComboBoxItem>nazwy</ComboBoxItem>
+                        <ComboBoxItem>rozmiaru</ComboBoxItem>
+                        <ComboBoxItem>daty modyfikacji</ComboBoxItem>
+                    </ComboBox>
+                    <ComboBox Margin="10, 0, 0, 0">
+                        <ComboBoxItem IsSelected="True">malejąco</ComboBoxItem>
+                        <ComboBoxItem>rosnąco</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Nazwa pliku zawiera: "/>
+                    <TextBox Name="FileNameContains" Width="100" />
+                    <Label Content="Rozszerzenie: "/>
+                    <TextBox Name="FileExtension" Width="50" />
+                </StackPanel>
             </StackPanel>
             <TreeView  Grid.Column="1" Grid.Row="1">
                 <TreeViewItem Header="Local Disk (C:)">
