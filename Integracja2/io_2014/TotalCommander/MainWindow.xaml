@@ -1,7 +1,8 @@
 ﻿<Window x:Class="TotalCommander.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="600" Width="1000">
+        Title="TotalCommanderClon v0.1 preAlpha"
+        Icon="./resources/icon.png" Height="600" Width="1000">
     <Grid>
         <!-- podzial glowny -->
         <Grid.ColumnDefinitions>

@@ -119,6 +119,7 @@
     <Content Include="7za.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\icon.png" />
     <Resource Include="resources\archive.png" />
     <Resource Include="resources\folder.png" />
     <Resource Include="resources\link.png" />
