@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Collections.ObjectModel;
 using System.Windows.Shapes;
 using TotalCommander.Controller;
 using TotalCommander.Tree;
@@ -25,34 +25,175 @@ namespace TotalCommander
     /// </summary>
     public partial class MainWindow : Window
     {
-        StringBuilder pathBuilder = new StringBuilder();
+        private int activeTree { get; set; }
         IController contr = new Controller.Controller();
         IMyTree mytree = new MyTree();
+        TreeViewItem selectedNode;
+        ObservableCollection<FileSystemInfo> oInfo { get; set; }
+        ObservableCollection<FileSystemInfo> oInfo2 { get; set; }
+        ObservableCollection<DriveInfo> driveInfo { get; set; }
         bool debug = true;
+        List<String> stringi { get; set; }
+        private string directoryPath { get; set; }
 
         public MainWindow()
         {
+            oInfo = new ObservableCollection<FileSystemInfo>();
+            oInfo2 = new ObservableCollection<FileSystemInfo>();
+            driveInfo = new ObservableCollection<DriveInfo>();
+            this.DataContext = new
+            {
+                fInfo = oInfo,
+                drInfo = driveInfo,
+                fInfo2 = oInfo2,
+            };
+
             InitializeComponent();
             setSsh.Checked += this.fsetSsh;
             setDrop.Checked += this.fsetDropbox;
             setLok.Checked += this.fsetLokalny;
             sendButton.Click += this.fsendButton;
-            FilterSubmit.Click += this.FilterSubmitted;
             menuExit.Click += this.fexitButton;
-            menuAbout.Click += this.faboutButton;
+
             GenerateStat.Click += this.GenerateStatictics;
             MakeArchive.Click += this.GenerateArchive;
+            getDrives();
+
+        }
+
+        private void OnItemMouseDoubleClick1(object sender, MouseButtonEventArgs args)
+    {
+        if (sender is TreeViewItem)
+        {
+            if (!((TreeViewItem)sender).IsSelected)
+            {
+                return;
+            }
+        }
+        selectedNode = (TreeViewItem)args.Source;
+        showDir(selectedNode, tree1);
+        
+    }
+        private void OnItemMouseDoubleClick2(object sender, MouseButtonEventArgs args)
+        {
+            if (sender is TreeViewItem)
+            {
+                if (!((TreeViewItem)sender).IsSelected)
+                {
+                    return;
+                }
+            }
+            selectedNode = (TreeViewItem)args.Source;
+            showDir(selectedNode, tree2);
+
+        }
 
 
-            //na poczatek powinno sie ustawić lokalny po obu stronach
-            // ps. powinien byc sam ukosnik i powinno zwracac liste dyskow
-            // ale wtedy probuje zalaczyc się ssh czy cos, dlatego wpisalem sztywno
-            // no i powinno to przechodzic jakos przez filtrowanie i sortowanie
-            // aha, no i jeszcze - jak na razie kontroler zwraca tylko pliki, bez katalogow
-            // nie wiem czemu
-            setLeftView(contr.getFilesInfo("D:/"));
-            setRightView(contr.getFilesInfo("C:/"));
 
+
+        private void showDir(TreeViewItem selectedNode, TreeView tv)
+        {
+            if (selectedNode.Header.GetType().Equals(typeof(DirectoryInfo)))
+            {
+
+                directoryPath =
+                    (selectedNode.Header as DirectoryInfo).FullName;
+                if (tv.Name.Equals("tree1"))
+                    contr.clearPrevNext(1);
+                else contr.clearPrevNext(2);
+                getdirContent((selectedNode.Header as DirectoryInfo).FullName, tv);
+
+            }
+            else if (selectedNode.Header.GetType().Equals(typeof(FileInfo)))
+            {
+
+                if (selectedNode.Header.ToString().Equals(".."))
+                {
+                    int indeks;
+                    bool rem = false;
+                    if (directoryPath != null)
+                    {
+                        indeks = 0;
+                        if (directoryPath.LastIndexOf("\\") == -1) return;
+                        else
+                            indeks = directoryPath.LastIndexOf("\\");
+                        directoryPath = directoryPath.Remove(indeks);
+
+                        if (directoryPath.LastIndexOf("\\") == -1)
+                        {
+                            directoryPath = directoryPath + "\\";
+                            rem = true;
+                        }
+                        getdirContent(directoryPath, tv);
+
+                        if (rem == true) directoryPath.Remove(indeks);
+                    }
+                }
+                else
+                {
+                    contr.openFile((selectedNode.Header as FileInfo).FullName);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Jak dobrze rozumiem tu są robione rzeczy dotyczące pokazywania drzewek
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="tv"></param>
+        private void getdirContent(String path, TreeView tv)
+        {
+            if (path == null) return;
+            if (tv.Name.Equals("tree1"))
+                if (contr.getDirectoryContent(path, 1).Count != 0)
+                {
+                    this.oInfo.Clear();
+                    oInfo.Add(new FileInfo(".."));
+                    foreach (FileSystemInfo fis in contr.getDirectoryContent(path, 2))
+                    {
+                        oInfo.Add(fis);
+     
+                    }
+                    activeTree = 1;
+                }
+                if (tv.Name.Equals("tree2"))
+                    if (contr.getDirectoryContent(path, 1).Count != 0)
+                    {
+                        this.oInfo2.Clear();
+                        oInfo2.Add(new FileInfo(".."));
+                        foreach (FileSystemInfo fis in contr.getDirectoryContent(path, 2))
+                        {
+                            oInfo2.Add(fis);
+                        }
+                        activeTree = 2;
+                    }
+
+        }
+
+
+        public void getDrives()
+        {
+            this.driveInfo.Clear();
+            foreach (DriveInfo di in contr.getDrives())
+            {
+                driveInfo.Add(di);
+            }
+            combo1.SelectedIndex = combo1.Items.IndexOf(driveInfo.ElementAt(0));
+            combo2.SelectedIndex = combo2.Items.IndexOf(driveInfo.ElementAt(0));
+        }
+
+
+
+
+
+        private void treeExpanded(object sender, RoutedEventArgs e)
+        {
+
+            //TreeViewItem tvi = e.OriginalSource as TreeViewItem;
+
+            //if (tvi.Header.GetType().Equals(typeof(DirectoryInfo)))
+            //    Console.WriteLine("line 2");
         }
 
         public void fsetLokalny(object sender, RoutedEventArgs e)
@@ -61,7 +202,6 @@ namespace TotalCommander
             haslo.IsEnabled = false;
             server.IsEnabled = false;
             port.IsEnabled = false;
-            if (debug) Console.Out.WriteLine("Selected local file system");
         }
 
         public void fsetDropbox(object sender, RoutedEventArgs e)
@@ -70,7 +210,6 @@ namespace TotalCommander
             haslo.IsEnabled = true;
             server.IsEnabled = false;
             port.IsEnabled = false;
-            if (debug) Console.Out.WriteLine("Selected Dropbox");
         }
 
         public void fsetSsh(Object sender, RoutedEventArgs e)
@@ -79,34 +218,90 @@ namespace TotalCommander
             haslo.IsEnabled = true;
             server.IsEnabled = true;
             port.IsEnabled = true;
-            if (debug) Console.Out.WriteLine("Selected SSH");
+        }
+
+        public void fsendButton(Object sender, RoutedEventArgs e)
+        {
+            //wyslanie danych logowania do kontrolera
+            //contr.loginData()
+        }
+
+        public void fexitButton(Object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void combo1SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            getdirContent((sender as ComboBox).SelectedValue.ToString(), tree1);
+        }
+
+        private void combo2SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            getdirContent((sender as ComboBox).SelectedValue.ToString(), tree2);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (activeTree == 1)
+            {
+                    getdirContent(contr.prevCatalogue(1), tree1);
+            }
+            else if (activeTree == 2)
+                getdirContent(contr.prevCatalogue(2), tree2);
+
+
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            if (activeTree == 1)
+            {
+                Console.WriteLine(contr.nextCatalogue(1) + " prev");
+                getdirContent(contr.nextCatalogue(1), tree1);
+
+                //contr.nextCatalogue(1);
+            }
+            else if (activeTree == 2)
+                getdirContent(contr.nextCatalogue(2), tree2);
+        }
+
+        //ZABAWECZKI EMILA
+
+        /// <summary>
+        /// Metoda, która reaguje na naciśnięcie przycisku wyszukiwania
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClickedSearchButton(object sender, RoutedEventArgs e)
+        {
+            
+            MessageBox.Show("Chce wyszukiwać, a to nie działa, bo Rokita nie zrobił XD");
         }
 
 
-        //wykonywany po wcisnieciu przycisku wyslij
-        //z niego mozna oczytac dane potrzebne do polaczenia
-        public void fsendButton(Object sender, RoutedEventArgs e)
+        void GenerateStatictics(object sender, RoutedEventArgs e)
         {
-            if (debug) Console.Out.WriteLine("Login data server: " + server.Text+" port: "+port.Text+" login: "+login.Text+" pass: ****");
-            //wyslanie danych logowania do kontrolera
-            if ((bool)setLok.IsChecked)
-            {
-                //wybrano system lokalny
+            //clicked stat generate button
+        }
 
-                //setLeftView(contr.connectLocal());
+        void GenerateArchive(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "archive";
+            dlg.DefaultExt = ".zip";
+            dlg.Filter = "Text documents (.zip)|*.zip";
+
+            Nullable<bool> result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                string filename = dlg.FileName;//jak zapisac
+                MessageBox.Show("To i tak się nie uda", "Nie robimy archiwum", MessageBoxButton.OK, MessageBoxImage.Stop);
             }
-            else if ((bool)setSsh.IsChecked)
+            else
             {
-                //wybrano SSH
-
-                //setLeftView(contr.connectSSH(server.Text, port.Text, login.Text, haslo.Text));
-
-            }
-            else if ((bool)setDrop.IsChecked)
-            {
-                //wybrano DROPBOX
-
-                //setLeftView(contr.connectDropbox(login.Text, haslo.Text));
+                MessageBox.Show("Nie to nie!", "Nie robimy archiwum", MessageBoxButton.OK, MessageBoxImage.Stop);
             }
         }
 
@@ -115,7 +310,7 @@ namespace TotalCommander
         //objektow FileInfo i wyswietla ja w oknie programu
         public void setLeftView(List<FileInfo> files)
         {
-            LeftTree.Items.Clear();
+            tree1.Items.Clear();
             files.ForEach(delegate(FileInfo filei)
             {
                 var item = new TreeViewItem();
@@ -135,12 +330,12 @@ namespace TotalCommander
                 menu.Items.Add(iCut);
                 menu.Items.Add(iPaste);
                 item.ContextMenu = menu;
-                
+
                 //item.Header = filei.Name;
                 item.MouseLeftButtonUp += item_MouseLeftButtonUp_leftTree;
                 item.MouseDoubleClick += item_MouseDoubleClick_leftTree;
-                
-                LeftTree.Items.Add(item);
+
+                tree1.Items.Add(item);
             });
         }
 
@@ -173,12 +368,43 @@ namespace TotalCommander
             }
         }
 
+        //pomocnicza funkcja do programowego dodawania ikony
+        private TreeViewItem GetTreeView(string uid, string text, string imagePath)
+        {
+            TreeViewItem item = new TreeViewItem();
+            item.Uid = uid;
+            item.IsExpanded = false;
+
+            // create stack panel
+            StackPanel stack = new StackPanel();
+            stack.Orientation = Orientation.Horizontal;
+
+            // create Image
+            Image image = new Image();
+            image.Source = new BitmapImage
+                (new Uri("pack://application:,,/" + imagePath));
+            image.Width = 16;
+            image.Height = 16;
+            // Label
+            Label lbl = new Label();
+            lbl.Content = text;
+
+
+            // Add into stack
+            stack.Children.Add(image);
+            stack.Children.Add(lbl);
+
+            // assign stack to header
+            item.Header = stack;
+            return item;
+        }
+
         //dla prawego okna
         //funkcja pobiera jako argument listę 
         //objektow FileInfo i wyswietla ja w oknie programu
         public void setRightView(List<FileInfo> files)
         {
-            RightTree.Items.Clear();
+            tree2.Items.Clear();
             files.ForEach(delegate(FileInfo filei)
             {
                 var item = new TreeViewItem();
@@ -203,7 +429,7 @@ namespace TotalCommander
                 item.MouseLeftButtonUp += item_MouseLeftButtonUp_leftTree;
                 item.MouseDoubleClick += item_MouseDoubleClick_leftTree;
 
-                RightTree.Items.Add(item);
+                tree2.Items.Add(item);
             });
         }
 
@@ -234,94 +460,6 @@ namespace TotalCommander
                 //albo deselekcji pliku/katalogu aby dodał do listy
                 if (debug) Console.Out.WriteLine("Clicked " + obj.Header);
             }
-        }
-
-        void FilterSubmitted(object sender, EventArgs e)
-        {
-            String sortby = ((ComboBoxItem)SortBySelection.SelectedItem).Content.ToString();
-            String sortascdsc = ((ComboBoxItem)SortByAscDsc.SelectedItem).Content.ToString();
-            String filename = FileNameContains.Text;
-            String extension = FileExtension.Text;
-
-            if (debug) Console.Out.WriteLine("Sort: " + sortby + " " + sortascdsc + " filter filename: " + filename + " extension: " + extension);
-        }
-
-        void GenerateStatictics(object sender, RoutedEventArgs e)
-        {
-            //clicked stat generate button
-        }
-
-        void GenerateArchive(object sender, RoutedEventArgs e)
-        {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "archive";
-            dlg.DefaultExt = ".zip";
-            dlg.Filter = "Text documents (.zip)|*.zip";
-
-            Nullable<bool> result = dlg.ShowDialog();
-
-            if (result == true)
-            {
-                string filename = dlg.FileName;//jak zapisac
-                MessageBox.Show("To i tak się nie uda", "Nie robimy archiwum", MessageBoxButton.OK, MessageBoxImage.Stop);
-            }
-            else
-            {
-                MessageBox.Show("Nie to nie!", "Nie robimy archiwum", MessageBoxButton.OK, MessageBoxImage.Stop);
-            }
-        }
-
-        void addToInfoBox(String txt)
-        {
-            InfoBox.Content += "\n\r"+txt;
-        }
-
-        public void faboutButton(object sender, RoutedEventArgs e)
-        {
-            string message = "Przed swymi oczyma masz właśnie jeden z najbardziej zaawansowanych managerów plików dla systemu Windows. Powstał on w ramach prac badawczych, których największym osiągnięciem było poprawne zaprogramowanie przycisku 'Exit', który możesz podziwiać po przejściu do menu 'File'.";
-            string title = "About";
-            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        public void fexitButton(Object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult res = MessageBox.Show("Niestety tamten przycisk nie działa, naciśnij OK, aby zamknąć", "To prawie koniec", MessageBoxButton.OKCancel, MessageBoxImage.Question);
-            switch (res)
-            {
-                case MessageBoxResult.OK: this.Close(); break;
-                default: return;
-            }
-        }
-
-        //pomocnicza funkcja do programowego dodawania ikony
-        private TreeViewItem GetTreeView(string uid, string text, string imagePath)
-        {
-            TreeViewItem item = new TreeViewItem();
-            item.Uid = uid;
-            item.IsExpanded = false;
-
-            // create stack panel
-            StackPanel stack = new StackPanel();
-            stack.Orientation = Orientation.Horizontal;
-
-            // create Image
-            Image image = new Image();
-            image.Source = new BitmapImage
-                (new Uri("pack://application:,,/" + imagePath));
-            image.Width = 16;
-            image.Height = 16;
-            // Label
-            Label lbl = new Label();
-            lbl.Content = text;
-
-
-            // Add into stack
-            stack.Children.Add(image);
-            stack.Children.Add(lbl);
-
-            // assign stack to header
-            item.Header = stack;
-            return item;
         }
 
         string getImgForExt(string ext)

@@ -40,9 +40,16 @@ namespace LFS
             if (Directory.Exists(path))
             {
                 DirectoryInfo dinfo = new DirectoryInfo(path);
-                foreach (FileInfo file in dinfo.GetFiles())
+                try
                 {
-                    list.Add(file);
+                    foreach (FileInfo file in dinfo.GetFiles())
+                    {
+                        list.Add(file);
+                    }
+                }
+                catch(UnauthorizedAccessException)
+                {
+                    return null;
                 }
             }
             else if (File.Exists(path))
@@ -85,6 +92,8 @@ namespace LFS
                 Write(subdir, subdirPath);
             }
         }
+
+
 
         public void rename(string path, string name)
         {

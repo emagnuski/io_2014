@@ -1,8 +1,7 @@
 ﻿<Window x:Class="TotalCommander.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="TotalCommanderClon v0.1 preAlpha"
-        Icon="./resources/icon.png" Height="600" Width="1000">
+        Title="MainWindow" Height="600" Width="1000">
     <Grid>
         <!-- podzial glowny -->
         <Grid.ColumnDefinitions>
@@ -11,22 +10,30 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="18"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <!-- podzial przestrzeni poza menu -->
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="13*" />
-                <ColumnDefinition Width="111*"/>
-                <ColumnDefinition Width="124*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
+            <Grid.Resources>
+                <!--<HierarchicalDataTemplate x:Key="ChildTemplate" ItemsSource="{Binding Path=Child, UpdateSourceTrigger=PropertyChanged}" >
+                    <TextBlock Text="{Binding Path=Name}" />
+                </HierarchicalDataTemplate>-->
+                <DataTemplate x:Key="NameTemplate">
+                <!--ItemsSource="{Binding Path=Child, UpdateSourceTrigger=PropertyChanged}"
+                ItemTemplate="{StaticResource ChildTemplate}">-->
+                    <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                </DataTemplate>
+            </Grid.Resources>
             <!-- lewy gorny panel wyboru zrodla danych -->
-            <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+            <StackPanel Grid.Column="0" Grid.Row="0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 10, 0, 10">
                     <RadioButton Content="SSH" Name="setSsh" Margin="10, 0, 10, 0" />
                     <RadioButton Content="Dropbox" Name="setDrop" Margin="10, 0, 10, 0" />
@@ -37,23 +44,50 @@
                     <Label Content="Login:   " />
                     <TextBox Name="login" Width="150" />
                     <Label Content="Hasło: " Margin="40, 0, 0, 0"/>
-                    <PasswordBox Name="haslo" Width="150" />
+                    <TextBox Name="haslo" Width="150" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Serwer: "/>
                     <TextBox Name="server" Width="150" />
                     <Label Content="Port:   " Margin="40, 0, 0, 0"/>
                     <TextBox Name="port" Width="150" Margin="2, 0, 0, 0"/>
-                </StackPanel>
+                </StackPanel> 
             </StackPanel>
             <!-- lewy treeview -->
-            <TreeView Name="LeftTree" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding}" />
-                </TreeView.ItemTemplate>
+            <TreeView Name="tree1"    Grid.Column="0" Grid.Row="1" ItemTemplate="{StaticResource NameTemplate}"
+                      TreeViewItem.Expanded ="treeExpanded" ItemsSource="{Binding fInfo, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0,30,0,0" MouseLeftButtonUp="item_MouseLeftButtonUp_leftTree"> <!--ItemTemplate="{StaticResource NameTemplate}">-->
+                <!--<TreeViewItem ItemsSource="{Binding fInfo, UpdateSourceTrigger = PropertyChanged}">
+                    <TreeViewItem.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock  Text="{Binding Name}" />
+                        </DataTemplate>
+                    </TreeViewItem.HeaderTemplate>
+                </TreeViewItem>-->
+                <!--<TreeView.ItemsSource>
+                    
+                </TreeView.ItemsSource>-->
+                <!--<TreeView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Foreground="Red" Text="{Binding Name}" />
+                    </DataTemplate>
+                </TreeView.ItemTemplate>-->
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="OnItemMouseDoubleClick1" />
+                        <!--<EventSetter Event="MouseRightButtonDown">-->
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <!--<TreeViewItem ItemsSource="{Binding getItem()}">
+                    
+                </TreeViewItem>-->
             </TreeView>
             <!-- prawy gorny panel -->
-            <StackPanel Grid.Row="0" Grid.Column="2">
+            <!--<StackPanel Grid.Column="1" Grid.Row="0">
+                <Label Content="Ustawienia sortowania" />
+            </StackPanel>-->
+
+            <StackPanel Grid.Row="0" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Sortuj wg. " />
                     <ComboBox Name="SortBySelection">
@@ -73,18 +107,27 @@
                     <Label Content="Rozszerzenie: "/>
                     <TextBox Name="FileExtension" Width="50" />
                 </StackPanel>
-                <Button Name="FilterSubmit" Content="Wykonaj" Margin="0, 10, 0, 0" />
+                <Button Name="FilterSubmit" Content="Wykonaj" Margin="0, 10, 0, 0" Click="ClickedSearchButton" />
             </StackPanel>
-            <TreeView Name="RightTree" Grid.Column="2" Grid.Row="1">
-                <TreeViewItem Header="Local Disk (C:)">
-                    <TreeViewItem Header="Windows"/>
-                    <TreeViewItem Header="Program Files"/>
-                    <TreeViewItem Header="Users"/>
-                </TreeViewItem>
-                <TreeViewItem Header="Portable (F:)">
-                    <TreeViewItem Header="Data"/>
-                </TreeViewItem>
+
+
+            <TreeView Name="tree2"  Grid.Column="1" Grid.Row="1" Margin="0,30,0,0"
+                      ItemTemplate="{StaticResource NameTemplate}"
+                      TreeViewItem.Expanded ="treeExpanded" ItemsSource="{Binding fInfo2, UpdateSourceTrigger=PropertyChanged}">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <EventSetter Event="MouseDoubleClick" Handler="OnItemMouseDoubleClick2" />
+                            
+                        </Style>
+                    </TreeView.ItemContainerStyle>
             </TreeView>
+            <ComboBox Name="combo1" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120"
+                      ItemsSource="{Binding drInfo, UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource NameTemplate}" SelectionChanged="combo1SelectionChanged"
+                      />
+            <Button Content="&lt;--" HorizontalAlignment="Left" Margin="325,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+            <Button Content="--&gt;" HorizontalAlignment="Left" Margin="411,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+            <ComboBox Name="combo2" Grid.Column="1" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120"
+                      ItemsSource="{Binding drInfo, UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource NameTemplate}" SelectionChanged="combo2SelectionChanged"/>
         </Grid>
 
         <Menu Grid.Column="0" Grid.Row="0" IsMainMenu="True" VerticalAlignment="Top">
@@ -92,16 +135,17 @@
                 <Separator />
                 <MenuItem Name="menuExit" Header="_Exit" />
             </MenuItem>
+            <MenuItem Header="_Edit" />
+            <MenuItem Header="_View" />
+            <MenuItem Header="_Window" />
             <MenuItem Header="_Options">
                 <MenuItem Name="GenerateStat" Header="_Generate statistics" />
                 <MenuItem Name="MakeArchive" Header="_Generate archive" />
             </MenuItem>
-            <MenuItem Header="_Help">
-                <MenuItem Name="menuAbout" Header="About" />
-            </MenuItem>
+            <MenuItem Header="_Help" />
         </Menu>
 
-        <Label Name="InfoBox" Grid.Column="0" Grid.Row="2" Content="..."/>
+        <Label Grid.Column="0" Grid.Row="2" Content="..."/>
 
 
 
