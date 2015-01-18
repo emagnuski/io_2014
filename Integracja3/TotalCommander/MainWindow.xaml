@@ -1,0 +1,109 @@
+﻿<Window x:Class="TotalCommander.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TotalCommanderClon v0.1 preAlpha"
+        Icon="./resources/icon.png" Height="600" Width="1000">
+    <Grid>
+        <!-- podzial glowny -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="18"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <!-- podzial przestrzeni poza menu -->
+        <Grid Grid.Column="0" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="13*" />
+                <ColumnDefinition Width="111*"/>
+                <ColumnDefinition Width="124*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- lewy gorny panel wyboru zrodla danych -->
+            <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0, 10, 0, 10">
+                    <RadioButton Content="SSH" Name="setSsh" Margin="10, 0, 10, 0" />
+                    <RadioButton Content="Dropbox" Name="setDrop" Margin="10, 0, 10, 0" />
+                    <RadioButton Content="Lokalny" Name="setLok" Margin="10, 0, 10, 0" IsChecked="True" />
+                    <Button Name="sendButton" Margin="20, 0, 10, 0" Padding="10, 0, 10, 0">Połącz</Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Login:   " />
+                    <TextBox Name="login" Width="150" />
+                    <Label Content="Hasło: " Margin="40, 0, 0, 0"/>
+                    <PasswordBox Name="haslo" Width="150" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Serwer: "/>
+                    <TextBox Name="server" Width="150" />
+                    <Label Content="Port:   " Margin="40, 0, 0, 0"/>
+                    <TextBox Name="port" Width="150" Margin="2, 0, 0, 0"/>
+                </StackPanel>
+            </StackPanel>
+            <!-- lewy treeview -->
+            <TreeView Name="LeftTree" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding}" />
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <!-- prawy gorny panel -->
+            <StackPanel Grid.Row="0" Grid.Column="2">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Sortuj wg. " />
+                    <ComboBox Name="SortBySelection">
+                        <ComboBoxItem IsSelected="True">domyślne</ComboBoxItem>
+                        <ComboBoxItem>nazwy</ComboBoxItem>
+                        <ComboBoxItem>rozmiaru</ComboBoxItem>
+                        <ComboBoxItem>daty modyfikacji</ComboBoxItem>
+                    </ComboBox>
+                    <ComboBox Name="SortByAscDsc" Margin="10, 0, 0, 0">
+                        <ComboBoxItem IsSelected="True">malejąco</ComboBoxItem>
+                        <ComboBoxItem>rosnąco</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
+                    <Label Content="Nazwa pliku zawiera: "/>
+                    <TextBox Name="FileNameContains" Width="100" />
+                    <Label Content="Rozszerzenie: "/>
+                    <TextBox Name="FileExtension" Width="50" />
+                </StackPanel>
+                <Button Name="FilterSubmit" Content="Wykonaj" Margin="0, 10, 0, 0" />
+            </StackPanel>
+            <TreeView Name="RightTree" Grid.Column="2" Grid.Row="1">
+                <TreeViewItem Header="Local Disk (C:)">
+                    <TreeViewItem Header="Windows"/>
+                    <TreeViewItem Header="Program Files"/>
+                    <TreeViewItem Header="Users"/>
+                </TreeViewItem>
+                <TreeViewItem Header="Portable (F:)">
+                    <TreeViewItem Header="Data"/>
+                </TreeViewItem>
+            </TreeView>
+        </Grid>
+
+        <Menu Grid.Column="0" Grid.Row="0" IsMainMenu="True" VerticalAlignment="Top">
+            <MenuItem Header="_File">
+                <Separator />
+                <MenuItem Name="menuExit" Header="_Exit" />
+            </MenuItem>
+            <MenuItem Header="_Options">
+                <MenuItem Name="GenerateStat" Header="_Generate statistics" />
+                <MenuItem Name="MakeArchive" Header="_Generate archive" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Name="menuAbout" Header="About" />
+            </MenuItem>
+        </Menu>
+
+        <Label Name="InfoBox" Grid.Column="0" Grid.Row="2" Content="..."/>
+
+
+
+    </Grid>
+</Window>
