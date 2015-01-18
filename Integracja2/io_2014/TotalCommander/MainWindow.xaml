@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="18"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <!-- podzial przestrzeni poza menu -->
         <Grid Grid.Column="0" Grid.Row="1">
@@ -35,7 +35,7 @@
                     <Label Content="Login:   " />
                     <TextBox Name="login" Width="150" />
                     <Label Content="Hasło: " Margin="40, 0, 0, 0"/>
-                    <TextBox Name="haslo" Width="150" />
+                    <PasswordBox Name="haslo" Width="150" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Serwer: "/>
@@ -45,15 +45,10 @@
                 </StackPanel>
             </StackPanel>
             <!-- lewy treeview -->
-            <TreeView Name="tree" Grid.Column="0" Grid.Row="1" TreeViewItem.Expanded ="treeExpanded">
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <EventSetter Event="MouseDoubleClick" Handler="OnItemMouseDoubleClick" />
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                <!--<TreeViewItem ItemsSource="{Binding getItem()}">
-                    
-                </TreeViewItem>-->
+            <TreeView Name="LeftTree" Grid.Column="0" Grid.Row="1">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding}" />
+                </TreeView.ItemTemplate>
             </TreeView>
             <!-- prawy gorny panel -->
             <StackPanel Grid.Row="0" Grid.Column="1">
@@ -70,14 +65,15 @@
                         <ComboBoxItem>rosnąco</ComboBoxItem>
                     </ComboBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0, 5, 0, 0">
+                <StackPanel Orientation="Horizontal" Margin="0, 10, 0, 0">
                     <Label Content="Nazwa pliku zawiera: "/>
                     <TextBox Name="FileNameContains" Width="100" />
                     <Label Content="Rozszerzenie: "/>
                     <TextBox Name="FileExtension" Width="50" />
                 </StackPanel>
+                <Button Name="FilterSubmit" Content="Wykonaj" Margin="0, 10, 0, 0" />
             </StackPanel>
-            <TreeView  Grid.Column="1" Grid.Row="1">
+            <TreeView Name="RightTree" Grid.Column="1" Grid.Row="1">
                 <TreeViewItem Header="Local Disk (C:)">
                     <TreeViewItem Header="Windows"/>
                     <TreeViewItem Header="Program Files"/>
@@ -94,13 +90,16 @@
                 <Separator />
                 <MenuItem Name="menuExit" Header="_Exit" />
             </MenuItem>
-            <MenuItem Header="_Edit" />
-            <MenuItem Header="_View" />
-            <MenuItem Header="_Window" />
-            <MenuItem Header="_Help" />
+            <MenuItem Header="_Options">
+                <MenuItem Name="GenerateStat" Header="_Generate statistics" />
+                <MenuItem Name="MakeArchive" Header="_Generate archive" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Name="menuAbout" Header="About" />
+            </MenuItem>
         </Menu>
 
-        <Label Grid.Column="0" Grid.Row="2" Content="..."/>
+        <Label Name="InfoBox" Grid.Column="0" Grid.Row="2" Content="..."/>
 
 
 

@@ -119,6 +119,13 @@
     <Content Include="7za.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\archive.png" />
+    <Resource Include="resources\folder.png" />
+    <Resource Include="resources\link.png" />
+    <Resource Include="resources\music.png" />
+    <Resource Include="resources\photo.png" />
+    <Resource Include="resources\setting.png" />
+    <Resource Include="resources\text.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
